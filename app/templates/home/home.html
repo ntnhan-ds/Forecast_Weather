@@ -399,29 +399,38 @@
     function getWeather() {
         const emailInput = document.getElementById('emailInput').value;
         if (emailInput) {
-            fetch('http://localhost:8888/api/test_api', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email: emailInput })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert('Error: ' + data.error);
-                } else {
-                    alert('Weather information has been sent to your email.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+    
+                    fetch('http://localhost:8888/api/send_weather', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email: emailInput, latitude: latitude, longitude: longitude })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert('Error: ' + data.error);
+                        } else {
+                            alert('Weather information has been sent to your email.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
         } else {
             alert('Please enter your email.');
         }
     }
-
+    
     function useCurrentLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
