@@ -5,6 +5,9 @@ import json
 from dotenv import load_dotenv
 import os
 import requests
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 # Create your views here.
 
@@ -15,9 +18,42 @@ api_v1_url = "http://api.weatherapi.com/v1/"
 
 
 @csrf_exempt
-def test_api(request):
+def send_weather(request):
     if request.method == "GET":
-        return JsonResponse({f"message": f"{api_key}"})
+        sender_email = "your_email@gmail.com"
+        sender_password = "your_password"
+
+        # Thông tin người nhận
+        receiver_email = "recipient_email@example.com"
+
+        # Tạo đối tượng MIMEMultipart
+        msg = MIMEMultipart()
+
+        # Đặt các thông tin: người gửi, người nhận và chủ đề
+        msg["From"] = sender_email
+        msg["To"] = receiver_email
+        msg["Subject"] = "Test email from Python"
+
+        # Nội dung email
+        body = "Hello, this is a test email sent from Python."
+
+        # Thêm nội dung vào email
+        msg.attach(MIMEText(body, "plain"))
+
+        # Thiết lập kết nối với máy chủ SMTP của người gửi
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+
+        # Đăng nhập vào email người gửi
+        server.login(sender_email, sender_password)
+
+        # Gửi email
+        server.sendmail(sender_email, receiver_email, msg.as_string())
+
+        # Đóng kết nối
+        server.quit()
+
+        print("Email sent successfully!")
 
 
 def get_city_from_location(lat, lon):
