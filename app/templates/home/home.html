@@ -214,6 +214,18 @@
             padding-bottom: 3%;
         }
 
+        .search-box button:hover,
+        .current-location button:hover,
+        .get-weather button:hover {
+            background-color: gray;
+            color:white; 
+        }
+
+        .forecast .day:hover {
+            transform: translateY(-5px); 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
         .forecast .day {
             flex: 1;
             background-color: #6C757D;
@@ -234,6 +246,16 @@
         .forecast .day:last-child {
             margin-right: 0;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .weather-info {
+            animation: fadeIn 0.5s ease-out; 
+        }
+        
     </style>
 </head>
 <body>
@@ -372,6 +394,7 @@
 
                         forecastDiv.appendChild(dayElement);
                     });
+                    alert('The weather is updated.');
                 }
             })
             .catch(error => {
@@ -505,7 +528,9 @@
                             dayElement.appendChild(humidityElement);
 
                             forecastDiv.appendChild(dayElement);
+
                         });
+                        alert('The weather is updated.');
                     }
                 })
                 .catch(error => {
@@ -516,5 +541,7 @@
             alert('Geolocation is not supported by this browser.');
         }
     }
+
+    
 </script>
 </html>
